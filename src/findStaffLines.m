@@ -10,7 +10,7 @@ function foundLines = findStaffLines( sheet , algorithm , argin )
     %     values for each x value represented by index into vector) with respect to top of sheet.
     %
     % Inputs:
-    %     sheet - Image data for sheet of music; assumed to be black and white (ie. single channel image).
+    %     sheet - Thresholded image data for sheet of music; entries > 0 considered features, <= 0 is background
     %     algorithm - String defining detection algorithm to be used; more details below.
     %
     % NOTES:
@@ -23,8 +23,8 @@ function foundLines = findStaffLines( sheet , algorithm , argin )
     
     if strcmp( algorithm , 'simple' )
         %% simple
-        dark = sheet < max(sheet(:))/2;
-        projH = sum(dark,2);
+        features = sheet > 0;
+        projH = sum(features,2);
         lines = find( projH > 0 );
         if nargin == 2
             minPercentage = 0.95;

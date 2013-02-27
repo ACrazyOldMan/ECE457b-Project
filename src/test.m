@@ -2,6 +2,7 @@ figureID = 1;
 sheet = imread( dataPath( 'optimal/Bloom_Nobly_Cherry_Blossom_of_Sumizome__Border_of_Life_Piano_Version-1.png' ) );
 [ M , N , C ] = size(sheet);
 sheet = sum( sheet , 3 ) / C;
+sheet = -( sheet - min(sheet(:)) - range(sheet(:))/2 );
 
 %% line detection
 lines = findStaffLines( sheet , 'simple' );

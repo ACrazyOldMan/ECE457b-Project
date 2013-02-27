@@ -19,9 +19,8 @@ function features = removeStaffLines( sheet , lines , algorithm , argin )
     
     if strcmp( algorithm , 'simple' )
         %% simple
-        threshold = 0.5 * max(sheet(:));
         height = 1;
-        features = sheet <= threshold;
+        features = sheet > 0;
         for i = 1 : size(lines,1)
             line = lines(i,:);
             for j = 1 : N
@@ -31,7 +30,7 @@ function features = removeStaffLines( sheet , lines , algorithm , argin )
                     indices = indices( indices >= 1 );
                     indices = indices( indices <= M );
                     average = mean( sheet(indices,j) );
-                    features(y,j) = average <= threshold;
+                    features(y,j) = average > 0;
                 end
             end
         end
