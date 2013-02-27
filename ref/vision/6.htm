@@ -1,0 +1,442 @@
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 3.0//EN">
+<!--Converted with LaTeX2HTML 96.1-h (September 30, 1996) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds -->
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<title>DEALING WITH SUPERIMPOSED OBJECTS IN OPTICAL MUSIC RECOGNITION</title>
+<meta name="description" content="DEALING WITH SUPERIMPOSED OBJECTS IN OPTICAL MUSIC RECOGNITION">
+<meta name="keywords" content="synopsis5">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<link rel="STYLESHEET" href="6_files/synopsis5.css">
+</head>
+<body fgcolor="#000000" alink="#dd4000" bgcolor="#FFFFFF" lang="EN" link="#dd4000" vlink="#666633">
+<p>
+</p><h1 align="CENTER">SIXTH INTERNATIONAL CONFERENCE ON IMAGE PROCESSING AND ITS APPLICATIONS</h1>
+<h1 align="CENTER">DEALING WITH SUPERIMPOSED OBJECTS IN OPTICAL MUSIC RECOGNITION</h1>
+<p align="CENTER"><strong>D Bainbridge and T C Bell</strong></p><p>
+</p><p align="CENTER"><strong>Universities of Waikato and Canterbury, New Zealand</strong></p><br>
+<p>
+<b>INTRODUCTION <br> <br> </b>
+Optical Music Recognition (OMR) involves identifying musical symbols on a
+scanned sheet of music, and interpreting them so that the music can either
+be played by the computer, or put into a music editor.  Applications
+include providing an automatic accompaniment, transposing or extracting
+parts for individual instruments, and performing an automated
+musicological analysis of the music.
+</p><p>
+A key problem with music recognition, compared with character recognition,
+is that symbols very often overlap on the page.  The most significant form
+of this problem is that the symbols are superimposed on a five-line staff.
+Although the staff provides valuable positional information, it creates
+ambiguity because it is difficult to determine whether a pixel would be
+black or white if the staff line was not there.  Symbols also overlap
+because they can have multiple components, such as a
+note with a slur in front of it.  If the
+music is engraved and reproduced accurately then these should not overlap,
+but in practice it is inevitable that some will end up touching.
+</p><p>
+The other main difference between music recognition and character
+recognition is the set of permissible symbols.  In text, the alphabet size
+is fixed, and--to aid readability--each symbol is intentionally
+different.  Conversely, in music notation there is no standard ``alphabet''
+of shapes, with composers inventing new notation where necessary, and music
+for particular instruments using specialised notation where appropriate.
+Furthermore, different shapes in music notation are often <em>
+intentionally</em> similar in appearance, where the small differences
+substantially change the musical characteristic of the shape.  To counter
+this problem we have designed a system that is extensible in the music
+notation it can process.  This aspect of our project is described in
+Bainbridge and Bell&nbsp;[<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/node1.html#BB96">1</a>].  The focus of this paper is on techniques
+we have developed to deal with superimposed objects.
+</p><p>
+For most OMR systems, four stages can be identified: <em>staff line
+identification, musical object location, musical feature classification,</em>
+and <em>musical semantics.</em>  The first three stages are greatly affected
+by the problem of superimposed symbols, and this paper focuses on ways
+in which they can deal with this issue.
+<b><br> <br> <br> STAFF LINE IDENTIFICATION <br> <br> </b>
+The staff line identification stage involves looking for the horizontal
+lines on which objects are superimposed.  A popular approach that
+accomplishes this is to detect peaks in a horizontal projection of the
+image--see Blostein and Baird&nbsp;[<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/node1.html#BB92">2</a>] for a survey.  These
+lines, however, will not necessarily be straight, since distortions in the
+printing of the page or the scanning process may produce skewed, bent, or
+broken lines.  Existing algorithms are tolerant of these deviations, but
+the final representation of the staves is normally a collection of straight
+lines.  This is inaccurate since it fails to record the imperfections.
+</p><p>
+We have discovered that the accuracy of such algorithms can be
+dramatically improved with the addition of a post-processing step.
+Working from left to right, the post-processing step (known as <em>
+wobble</em>) attempts to follow a staff line by taking slithers that are one
+pixel wide.  Based on the previous slither of staff line detected, the next
+slither is searched for in a nearby vertical location.  The slither found
+can be slightly higher or lower than the previous slither, hence the
+ability to follow a staff line that wobbles (or bows or bends).
+The process is shown in Figure&nbsp;<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/synopsis5.html#figwobble_overview">1</a>.
+<br><a name="figwobble_overview">&nbsp;</a></p><center><img alt="figure1" src="6_files/img2.gif" align="BOTTOM" height="160" width="535"></center><br><p>
+</p><p>
+More precisely, the starting point for a new slither is the <i>top</i> and
+<i>bottom</i> of the previous staff line slither (Figure&nbsp;<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/synopsis5.html#figwobble_ntb">2</a>),
+which is then widened by one pixel both above and below; this is done to
+allow the next slither of staff line to deviate away from the previous
+position.  Next, all the slithers that at least start between the new
+values of <i>top</i> and <i>bottom</i> are found, and the centre of the slither that
+is closest to the centre of the previous slither is chosen.  Since it is
+possible that the slither found is due to an object passing through the
+staff line at that point, the final step is to check that the chosen
+slither is short enough to be only a staff line.  If this is not the case,
+then the previous values for <i>top</i> and <i>bottom</i> are used as the extremities
+of the new slither.
+
+</p><p>
+<a name="figwobble_ntb">&nbsp;</a></p><center><img alt="figure2" src="6_files/img4.gif" align="BOTTOM" height="166" width="689"></center>
+
+<p>
+To evaluate the effect of this new post-processing step, 15 A4 pieces of
+music were selected from a diverse range of sources (see
+Bainbridge&nbsp;[<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/node1.html#Bai97">3</a>]), scanned, and their staff lines extracted by hand.
+For the purposes of testing, these hand-edited staff lines are referred to
+as the ``ideal'' staff lines.  Table&nbsp;<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/synopsis5.html#tabtrad_verses_wobble">1</a> compares
+a straight line approximation with the <em>wobble</em> process.  A high
+value in the ``missed'' column indicates an algorithm that does not always
+follow the ideal staff lines.  A high value in the ``extra'' column is
+caused by an algorithm mistaking other parts of the image as the ideal
+staff line.  For the 15 test images, the accuracy of staff line
+identification rose from 50% to 96% when the <em>wobble</em>
+post-processing step was included.
+</p><p>
+   </p><center><u>TABLE 1 - Comparison of staff line identification algorithms.</u></center>
+   <a name="tabtrad_verses_wobble">&nbsp;</a>
+<small class="FOOTNOTE">
+  <div align="CENTER"><p align="CENTER"><table frame="BELOW" rules="GROUPS" border="" cols="6">
+<colgroup><col align="LEFT"><col align="RIGHT"><col align="RIGHT"><col align="RIGHT"><col align="RIGHT"><col align="RIGHT">
+</colgroup><tbody>
+<tr><td align="LEFT" nowrap="nowrap" valign="CENTER">
+  Algorithm </td><td colspan="1" align="CENTER" width="60" valign="BASELINE"> 
+  Number of ideal pixels</td><td colspan="1" align="CENTER" nowrap="nowrap" valign="CENTER"> 
+  Missed</td><td colspan="1" align="CENTER" nowrap="nowrap" valign="CENTER">
+  Extra</td><td colspan="1" align="CENTER" width="90" valign="BASELINE">
+  Total number of incorrect pixels</td><td colspan="1" align="CENTER" nowrap="nowrap" valign="CENTER"> 
+  Error</td></tr>
+</tbody><tbody>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE">
+  Straight line approximation  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 
+    3827438</td><td align="RIGHT" nowrap="nowrap" valign="BASELINE">1832010</td><td align="RIGHT" nowrap="nowrap" valign="BASELINE">66387</td><td align="RIGHT" nowrap="nowrap" valign="BASELINE">1898397</td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 49.60%</td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+  Post-processed by <em>wobble</em> </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 
+    3827438</td><td align="RIGHT" nowrap="nowrap" valign="BASELINE">89605</td><td align="RIGHT" nowrap="nowrap" valign="BASELINE">57791</td><td align="RIGHT" nowrap="nowrap" valign="BASELINE">14739</td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 3.85%</td></tr>
+</tbody>
+</table>
+</p></div></small>
+
+<p>
+Even with hand-edited staff lines it is impossible to generate an image
+that represents the true staff lines since superimposed objects obscure
+the upper and lower limits of the line, requiring ``educated guesses.''
+Extreme occurrences of this are when beams fall on a section of
+staff line, or long slurs of low curvature cross a staff line.
+Consequently, a comparison of the hand-generated ``ideal'' staff lines with
+staff lines generated by the computer will always include a residual
+difference.  
+
+</p><p>
+<b><br> OBJECT LOCATION <br> <br> </b>
+Once the staff lines have been identified, the superimposed musical objects
+must be located.  The most popular approach in OMR systems is to <em>
+remove</em> the staff lines.  In this approach, pixels on the staff line are
+deleted only if there is no evidence that they are a part of an object that
+continues above or below the expected position of the line.
+</p><p>
+The <em>de facto</em> test for this was first described by Clarke <em>et
+al.</em> [<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/node1.html#CBT88a">4</a>].  Traversing the length of each staff line (say from
+left to right), the template shown in Figure&nbsp;<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/synopsis5.html#figclarke_remove_template">3</a>
+is used to determine if there is an object superimposed on the staff line
+at any given point.  For a vertical slither of staff line starting at pixel
+<em>A</em>, if pixel <em>B</em> is black and at least one of the pixels <em>
+X</em>, <em>Y</em> or <em>Z</em> is black, then this is deemed sufficient
+evidence of an object, and the slither of staff line remains.  A mirror
+image of the template is used for the bottom half of the staff line.
+
+<a name="figclarke_remove_template">&nbsp;</a></p><p></p><center><img alt="figure3" src="6_files/img8_crop_trans.gif" align="MIDDLE" height="134" width="690"></center>
+
+<p>
+Even with this careful staff line removal algorithm, an object can become
+fragmented when a thin part of its shape, typically a line, blends
+tangentially into a staff line.  Common examples where this occurs
+are minim note heads and bass clefs.
+</p><p>
+An algorithm described by Martin and Bellissant [<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/node1.html#MB91a">5</a>] addresses this
+deficiency.  It is similar to that described by Clarke <em>et al.</em> except
+that a more intricate computation is used to decide when to remove a
+slither of staff line.  Instead of using a template to decide if an object
+passes through a particular point on a staff line, a set of <em>chords</em>
+are taken.  Here the term chord is used in its mathematical sense, to mean
+a straight line joining the ends of an arc.  The terminology is slightly
+inaccurate, since we are not strictly dealing with circles, but with the
+irregular shapes that cross staff lines.  Nevertheless, the intention is
+the same, since the algorithm computes the shortest distance between two
+points on the perimeter of the shape.  An example of this mathematical type
+of chord is shown in Figure&nbsp;<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/synopsis5.html#figmath_chord">4</a>.
+
+</p><p><br></p><center><a name="figmath_chord">&nbsp;</a><img alt="figure4" src="6_files/img10.gif" align="BOTTOM" height="267" width="479"></center>
+
+<p>
+In the algorithm, chords are computed over the range
+[
+<img alt="-90 degrees" src="6_files/img11.gif" align="BOTTOM" height="13" width="33">,
+<img alt="+90 degrees" src="6_files/img12.gif" align="BOTTOM" height="14" width="33">
+] and assembled into a histogram based
+on angle.  A histogram with one distinct peak lying at approximately
+<img alt="0 degrees" src="6_files/img13.gif" align="BOTTOM" height="13" width="13"> is
+caused by a point on the staff line that has
+no object passing through it, and therefore, can be safely removed.  A
+histogram with two or more distinct peaks is the result of an object
+passing through, or nearby, that point on the staff line, and is
+consequently left in the image.
+</p><p>
+Although Martin and Bellissant report reduced fragmentation, some
+did still occur; however, one can see how this trend of increasing
+the sophistication of the superimposed object test can be extended
+to deal with more forms of fragmentation.  Unfortunately the price
+to pay for reduced fragmentation is increased computational time.
+</p><p>
+Rather than remove the staff lines, we have developed an alternative,
+faster algorithm that follows the objects that <em>cross</em> the staff lines.
+The algorithm starts by tracking between staff lines to find shapes.  When one
+is found, a modified flood-fill algorithm that crosses over staff lines is
+used to locate the entire object.  When the algorithm reaches a staff
+line, the surrounding pixels are checked to determine whether or not the
+object exists on the other side.  If it does, the flood-fill procedure is
+directed to continue on the other side of the staff line.  The decision to
+cross a staff line is a reshaped form of the heuristic used in the removal
+algorithm to decide if a slither of staff line should be deleted, hence an
+equivalent staff line crossing algorithm exists for any removal based
+algorithm.
+</p><p>
+To evaluate the performance of this new algorithm, the same 15 pieces of
+music as before were processed to locate the superimposed musical objects.
+The results are shown in Figure&nbsp;<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/synopsis5.html#figob_loc_times">5</a>.  For the simple
+template test, the new algorithm is only slightly faster; however, for the
+more sophisticated, but computationally expensive, chord based check the
+algorithm is four times faster.  This is because the crossing based
+algorithm only needs to apply the test for superimposed objects when an
+object comes near a staff line, unlike the removal based version which
+applies the test at every point on the line.  When an expensive test
+is used, the saving in time is significant.
+1 0.075
+
+</p><p><a name="figob_loc_times">&nbsp;</a>
+</p><center>
+<table border="">
+  <tbody><tr><td>Removal based with template</td><td>177.08 secs</td></tr>
+  <tr><td>Crossing based with template</td><td>168.11 secs</td></tr>
+  <tr><td>Removal based with chord</td><td>2324.96 secs</td></tr>
+  <tr><td>Crossing based with chord</td><td>579.14 secs</td></tr>
+</tbody></table>
+<br>
+Figure 5: Average processing time for object location when processing the 15
+test pieces.
+</center>
+
+<br><p>
+<b><br> <br> PRIMITIVE DETECTION <br> <br> </b>
+Once the staff lines have been removed or effectively ignored by crossing
+over them, the black pixels left should be a part of musical objects.  The
+next stage in the OMR process is to detect the primitive shapes--such as
+note heads and note stems--that exist in these isolated shapes.  In
+previous projects a variety of pattern recognition techniques have been
+used to solve this problem: template matching, projections, and morphology
+to name a few [<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/node1.html#BB92">2</a>].  In keeping with our design requirement of
+extensibility, we make no commitment to one particular technique, but instead 
+we offer a collection of pattern recognition routines available through a
+specially designed programming language for primitive detection called
+P<font size="-1">RIMELA</font>.  A P<font size="-1">RIMELA</font> description is written for each type of primitive
+shape to be recognised with the pattern recognition routine most
+appropriate for the task selected.
+</p><p>
+Despite the care taken to perfect the separation of superimposed objects in
+the object location stage, inevitably some of these shapes will have been
+damaged by the attempt.  Two particular problems are that objects can be
+fragmented, and some objects may be touching so that they appear to be a
+single object.  It is important, therefore, that the primitive detection
+stage be tolerant of these defects.
+</p><p>
+To compensate for fragmentation we have developed three techniques:
+matching rectangular regions of the image rather then the isolated shapes,
+using graphical pattern recognition routines to detect primitive
+shapes, and using the original image in conjunction with the one that has
+had the staff lines removed.  The problem of having separate objects
+touching is addressed by template matching with multiple shape detection in
+one area, and the removal of primitives once they are detected.  Control of
+these techniques is provided through P<font size="-1">RIMELA</font>.
+<b><br> <br> Fragmentation <br> <br> </b>
+Existing OMR work has demonstrated that classifying musical objects based
+on their bounding box is not only fast but accurate because of the variety
+in dimensions of different musical shapes [<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/node1.html#BB92">2</a>].  However, this
+technique fails when an object becomes fragmented.  Previous projects have
+used ad hoc rules for joining boxes together, but not only is this
+imperfect, it is not suitable for an extensible system.
+</p><p>
+Our solution to the problem is to extend the dimensions of the bounding box
+of an isolated shape and then use graphical based pattern recognition
+routines, such as template matching and the Hough transform, to perform the
+match.  Because each primitive description specifies which pattern
+recognition routine to use and controls how much to extend a bounding box,
+only primitive shapes prone to fragmentation need use these options.
+</p><p>
+An additional option offered by P<font size="-1">RIMELA</font> is where the pattern recognition
+routine is applied.  Although the isolated objects (which are potentially
+fragmented) are used to target where to search for primitive, this does not
+mean that this image must be matched against the ideal P<font size="-1">RIMELA</font>
+description.  We also maintain a version of the image before the staff
+lines were removed so a P<font size="-1">RIMELA</font> description can specify this image as
+the location for the match to be performed.  This is the ideal image to
+match primitives such as the bass clef and hollow note heads using
+the Hough transform, because they will not have been fragmented by staff line 
+removal.
+<b><br> <br> Objects that touch <br> <br> </b>
+Strictly speaking touching objects should never arise.  Texts on the topic
+of music notation, such as Heussenstamm [<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/node1.html#Heu87">6</a>], stress the importance
+of a clear, distinct layout when positioning objects, and having objects
+that touch reflects poor craft-work.  Work in the field has indicated that
+reality is less than ideal, and touching objects frequently occur in
+printed music.  Common examples are slurs, ties and accidentals being
+placed so close to notes that the two shapes touch.  Again
+classification by bounding box fails in these situations.
+</p><p>
+Our solution to the problem is to allow the multiple matching of graphical
+pattern recognition routines.  By this we mean all occurrences of a graphic
+shape within a specified region are located.  Using this strategy, when a
+beamed note is encountered with sharps touching the note heads, for
+example, the P<font size="-1">RIMELA</font> primitive description for a sharp will find all
+occurrences of the primitive type.  An additional option in P<font size="-1">RIMELA</font> is to
+have all occurrences of a primitive type removed once they have been
+located.  Thus subsequent P<font size="-1">RIMELA</font> descriptions need not worry about the
+complications caused by this type of touching.
+<b><br> <br> Accuracy <br> <br> </b>
+To evaluate the robustness of P<font size="-1">RIMELA</font> the accuracy of primitive
+detection for the 11 examples of Common Music Notation<a name="tex2html1" href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/footnode.html#176"><img alt="footnote 1" src="6_files/foot_motif.gif" align="BOTTOM"></a> included in the 15
+test pieces of music from above, was calculated
+(Table&nbsp;<a href="http://www.cs.waikato.ac.nz/%7Edavidb/publications/ipa97/synopsis5.html#tabprim_oacc_perc_cmn_rotpg">2</a>).  Although the P<font size="-1">RIMELA</font>
+descriptions are not perfect in their classifications, a high accuracy rate
+is achieved.  In particular, the system correctly processed: 26 (out of a
+possible 26) fragmented bass clefs; 60 (out of a possible 62) fragmented
+hollow note heads; 71 (out of a possible 71) accidentals that touched note
+heads; and 34 (out of a possible 35) slurs and ties that touched note and
+accidentals.
+</p><p>
+  </p><center><u>TABLE 2 - Overall accuracy rate for the core CMN primitives in the 11 test 
+images.</u></center>
+  <a name="tabprim_oacc_perc_cmn_rotpg">&nbsp;</a>
+<small class="FOOTNOTE">
+  <div align="CENTER"><p align="CENTER"><table frame="BELOW" rules="GROUPS" border="" cols="5">
+<colgroup><col align="LEFT"><col align="RIGHT"><col align="RIGHT"><col align="RIGHT"><col align="RIGHT">
+</colgroup><tbody>
+<tr><td align="LEFT" nowrap="nowrap" valign="CENTER">
+Primitive 		</td><td align="CENTER" width="70" valign="CENTER"> 
+Number of primitives</td><td align="CENTER" width="100" valign="CENTER"> 
+Number of primitives missed</td><td align="CENTER" width="130" valign="CENTER"> 
+Number of shapes incorrectly identified as primitive</td><td align="CENTER" width="80" valign="CENTER">Overall accuracy rate</td></tr>
+</tbody><tbody>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE">Treble clef  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 67 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 1 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 98.51% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Bass clef curl  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 39 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 1 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 97.44% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Alto clef curl  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 8 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 100.00% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Time signature  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 23 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 100.00% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Sharp  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 219 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 13 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 94.06% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Flat  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 92 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 3 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 2 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 94.57% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Natural  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 57 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 10 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 82.46% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Double sharp  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 2 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 100.00% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Tail up  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 215 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 3 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 4 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 96.74% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Tail down  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 131 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 6 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 95.42% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Vertical line  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 3224 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 37 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 14 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 98.42% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Beam  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 791 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 63 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 7 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 91.15% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Filled-in note head  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 2830 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 2 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 21 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 99.19% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Hollow note head  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 174 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 32 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 7 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 77.59% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Semibreve note head  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 2 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 100.00% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Rectangle rest  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 119 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 1 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 99.16% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Crotchet rest  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 80 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 9 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 88.75% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Quaver rest  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 281 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 4 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 6 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 96.44% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Semiquaver rest  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 14 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 100.00% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Dot  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 334 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 12 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 10 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 93.41% </td></tr>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE"> 
+Slur  </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 244 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 14 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 0 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 94.26% </td></tr>
+</tbody><tbody>
+<tr><td align="LEFT" nowrap="nowrap" valign="BASELINE">Total/Weighted average </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 8946 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 211 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 71 </td><td align="RIGHT" nowrap="nowrap" valign="BASELINE"> 96.85% </td></tr>
+</tbody>
+</table>
+</p></div></small><p>
+<b><br> <br> CONCLUSIONS <br> <br> </b>
+Music recognition would be simple if music images had straight staff lines,
+clear printing, and a layout of symbols that followed the rules for music
+engraving.  The reality is that the images are bent and distorted, have
+poorly formed symbols, and symbols that touch each other when they
+should not.  Because the symbols are superimposed on a staff line, these
+problems are especially challenging, particularly when a symbol is
+fragmented or two symbols overlap when they should not.
+</p><p>
+By careful removal or avoidance of staff lines, and allowing for them to
+deviate from a straight line, the ``damage'' done to symbols by staff line
+removal can be reduced.  The next stage, matching the objects, is then
+designed to allow for the kinds of imperfections than can be expected both
+in the original image and after staff line removal, resulting in low error
+rates, which are necessary to make OMR a feasible technology.
+</p><p>
+<br>
+</p><p><a name="SECTIONREF"><b>REFERENCES</b></a><br>
+
+</p><dl compact="compact">
+<dt><a name="BB96"><strong>1</strong></a></dt><dd>
+Bainbridge, D. and Bell, T., 1996, <u>Proc. of the Nineteenth
+  Australasian Computer Science Conf.</u> (Melbourne) 308-317.
+<p>
+</p></dd><dt><a name="BB92"><strong>2</strong></a></dt><dd>
+Blostein, D. and Baird, H.&nbsp;S., 1992, <u>Structured Document Image
+  Analysis</u> (Baird, H.&nbsp;S., Bunke, H., and Yamamoto, K., eds.) Springer-Verlag,
+  Berlin, 405-434.
+<p>
+</p></dd><dt><a name="Bai97"><strong>3</strong></a></dt><dd>
+Bainbridge, D., 1997, ``Extensible Optical Music Recognition,'' PhD thesis,
+  Department of Computer Science, University of Canterbury, Christchurch, NZ.
+<p>
+</p></dd><dt><a name="CBT88a"><strong>4</strong></a></dt><dd>
+Clarke, A.&nbsp;T., Brown, B.&nbsp;M., and Thorne, M.&nbsp;P., 1988,
+    <u>Proc. of the Computers in Music Research Conf.</u> (Lancaster, UK) 84-87.
+<p>
+</p></dd><dt><a name="MB91a"><strong>5</strong></a></dt><dd>
+Martin, P. and Bellissant, C., 1991, <u>Proc. of First International
+  Conf. on Document Analysis</u>, <u>1</u> (Saint-Malo, France) 417-425.
+<p>
+</p></dd><dt><a name="Heu87"><strong>6</strong></a></dt><dd>
+Heussenstamm, G., 1987, ``The Norton Manual of Music Notation,'' W. W.
+  Norton.
+New York.
+</dd></dl>
+<p>
+<br> </p><hr>
+<p></p><address>
+<i>David Bainbridge <br>
+Tue Sep  2 11:44:13 NZST 1997</i>
+</address>
+
+
+</body></html>
