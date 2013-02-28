@@ -1,4 +1,4 @@
-function features = removeStaffLines( sheet , lines , algorithm , argin )
+function features = removeStaffLines( sheet , lines , algorithm , varargin )
     % Brief: Removes provided staff lines from sheet music data and returns matrix of remaining features.
     %
     %     features = removeStaffLines( sheet , lines , algorithm , ... )

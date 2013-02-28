@@ -1,4 +1,4 @@
-function foundLines = findStaffLines( sheet , algorithm , argin )
+function foundLines = findStaffLines( sheet , algorithm , varargin )
     % Brief: Determines vertical positions of staff lines for given sheet of music using specified algorithm.
     %
     %     foundLines = findStaffLines( sheet , algorithm , ... )
@@ -29,7 +29,7 @@ function foundLines = findStaffLines( sheet , algorithm , argin )
         if nargin == 2
             minPercentage = 0.95;
         else
-            minPercentage = argin(1);
+            minPercentage = varargin(1);
         end
         average = mean( projH(lines) );
         while sum( projH(lines) < minPercentage * average ) > 0
