@@ -15,6 +15,8 @@ function features = removeStaffLines( sheet , lines , algorithm , varargin )
     % Valid options for algorithm and their parameters are provided below:
     %
     %     simple: Simplest method of staff line removal using up/down template matching.
+    
+    %% Code
     [ M , N ] = size(sheet);
     
     if strcmp( algorithm , 'simple' )

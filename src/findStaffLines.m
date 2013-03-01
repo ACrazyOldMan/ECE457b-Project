@@ -19,6 +19,8 @@ function foundLines = findStaffLines( sheet , algorithm , varargin )
     % Valid options for algorithm and their parameters are provided below:
     %
     %     simple: Simplest method of staff line detection using horizontal projection.
+    
+    %% Code
     [ M , N ] = size(sheet);
     
     if strcmp( algorithm , 'simple' )
