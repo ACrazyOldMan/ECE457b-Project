@@ -11,6 +11,7 @@ function rotatedSheet = fixRotation( sheet , tolerance )
     %     tolerance - Error tolerance for resultant rotation angle.
     
     %% Code
+    import tools.twiddle;
     degrees = 0;
     incFactor = 1.1;
     decFactor = 0.9;
