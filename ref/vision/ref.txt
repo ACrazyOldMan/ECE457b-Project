@@ -6,11 +6,12 @@ Line detection:
 [1] http://www.dtic.mil/cgi-bin/GetTRDoc?AD=ADA459492
 [6] http://www.cs.waikato.ac.nz/~davidb/publications/ipa97/
 [9] http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.83.6587&rep=rep1&type=pdf
+[11] http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4775904
 [17] http://ieeexplore.ieee.org/xpl/articleDetails.jsp?reload=true&arnumber=4402863&contentType=Conference+Publications
 [18] http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=4775904&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D4775904
 
 Segmentation/line removal:
-[11] http://www.google.ca/url?sa=t&rct=j&q=staff%20line%20removal&source=web&cd=1&ved=0CDEQFjAA&url=http%3A%2F%2Fwww.researchgate.net%2Fpublication%2F221050952_Staff_Line_Detection_and_Removal_with_Stable_Paths%2Ffile%2F79e4150ce1db15bc2b.pdf&ei=KJQKUZC0N5TOyAHO74DIDw&usg=AFQjCNENu0YcdTsC8eDtrPNJSGuEDw7I2w&bvm=bv.41642243,d.aWc&kb=1&cad=rja
+[10] http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4359356
 [12]http://www.google.ca/url?sa=t&rct=j&q=staff%20line%20removal&source=web&cd=2&ved=0CDkQFjAB&url=http%3A%2F%2Fwww.icpr2010.org%2Fpdfs%2Ficpr2010_TuBCT9.29.pdf&ei=KJQKUZC0N5TOyAHO74DIDw&usg=AFQjCNHkBTHky9PzdkAS6xug5xPtOyruLg&bvm=bv.41642243,d.aWc&kb=1&cad=rja
 [13] http://www.google.ca/url?sa=t&rct=j&q=staff%20line%20removal&source=web&cd=6&ved=0CFcQFjAF&url=http%3A%2F%2Fwww.ipcsit.com%2Fvol22%2F54-ICCMS2012-S30001.pdf&ei=KJQKUZC0N5TOyAHO74DIDw&usg=AFQjCNE3lS_LcQY_05GeRNuCLDCZWZ6UFQ&bvm=bv.41642243,d.aWc&kb=1&cad=rja
 [14] http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=5655837&tag=1

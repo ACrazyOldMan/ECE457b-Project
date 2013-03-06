@@ -3,7 +3,22 @@ backpropagation:
 
 staff line detection:
 [3] http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.83.6587&rep=rep1&type=pdf
+[9] http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4711927
 
 OCR:
 [2] http://www.google.ca/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&ved=0CDMQFjAA&url=http%3A%2F%2Farxiv.org%2Fpdf%2F1211.4385&ei=WPYTUbz3GbTryAGt3IG4BQ&usg=AFQjCNGbwwNz0upNFbNmPsL24mFikJ4yBw&sig2=EXaAR5RJKbNCtpQJGXM_ZA&bvm=bv.42080656,d.aWc&kb=1&cad=rja
 
+symbol recognition:
+[4] http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6147057
+[10] http://www.inescporto.pt/~jsc/publications/conferences/2011ARebeloBRIDGES.pdf
+[11] http://ieeexplore.ieee.org/xpl/articleDetails.jsp?reload=true&arnumber=944402&contentType=Conference+Publications
+
+line thickness/spacing:
+[5] http://icpr2010.org/pdfs/icpr2010_TuBCT9.1.pdf
+
+pre-processing:
+[6] www.inescporto.pt/~jsc/publications/conferences/2010ARebeloRECPAD.pdf
+[7] http://link.springer.com/chapter/10.1007%2F978-3-642-21257-4_87?LI=true#page-1
+
+staff line removal:
+[8] http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=5597236
