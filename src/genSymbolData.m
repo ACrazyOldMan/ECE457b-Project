@@ -25,7 +25,9 @@ function genSymbolData( inputDir , outputQuantity , outputFormat , outputSize , 
             inputFile = strcat( inputTypePath , fileName );
             inputImage = imread( inputFile );
             inputImage = imcomplement( inputImage );
-            inputImage = rgb2gray( inputImage );
+            if size(inputImage,3) > 1
+                inputImage = rgb2gray( inputImage );
+            end
             
             %% Generate images
             for k = 1 : outputQuantity
