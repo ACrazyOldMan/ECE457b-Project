@@ -2,7 +2,7 @@
 inputDir = 'original';
 outputQuantity = 100;
 outputFormat = 'png';
-outputSize = [ 64 , 64 ];
+outputSize = [ 32 , 32 ];
 outputDir = 'test';
 doRotation = true;
 doScaling = true;

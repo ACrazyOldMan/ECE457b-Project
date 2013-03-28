@@ -2,7 +2,7 @@
 inputDir = 'original';
 outputQuantity = 360;
 outputFormat = 'png';
-outputSize = [ 64 , 64 ];
+outputSize = [ 32 , 32 ];
 outputDir = 'training';
 doRotation = true;
 doScaling = false;
