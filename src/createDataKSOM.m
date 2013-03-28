@@ -1,4 +1,4 @@
-function ksomWeights = createSymbolKSOM( data , clusterQuantity , changeThreshold , ksomFile )
+function ksomWeights = createDataKSOM( data , clusterQuantity , changeThreshold , ksomFile )
     %% Code
     if exist( ksomFile , 'file' )
         ksomWeights = load( ksomFile );

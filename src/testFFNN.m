@@ -21,12 +21,17 @@ testInput = single(testInput) / single(max(testInput(:)));
 
 %% reduce dimensionality of inputs
 disp( 'Reducing dimensionality using KSOM...' );
-clusterQuantity = 100; % new dimensionality; increase for higher accuracy, decrease for faster FFNN training
-changeThreshold = 0.001;
-ksomFile = 'ksomWeights'; % filename for cache for weights; delete to recalculate weights
-ksomWeights = createSymbolKSOM( [ trainingInput , testInput ] , clusterQuantity , changeThreshold , ksomFile );
-trainingInput = ksomWeights * trainingInput;
-testInput = ksomWeights * testInput;
+desiredDim = 100; % new dimensionality; increase for higher accuracy, decrease for faster FFNN training
+algorithm = 'ksom';
+tic
+if strcmp( algorithm , 'ksom' )
+    changeThreshold = 0.001;
+    ksomFile = 'ksomWeights'; % filename for caching of KSOM weights; delete to recalculate weights
+    newInput = reduceDimensionality( { trainingInput , testInput } , desiredDim , algorithm , changeThreshold , ksomFile );
+end
+toc
+trainingInput = newInput{1};
+testInput = newInput{2};
 
 %% Simulate various network parameters and get MSE
 disp( 'Finding best FFNN...' );
@@ -37,6 +42,7 @@ hiddenListQuantity = length(hiddenList);
 meanQuantity = 10; % number of runs to average MSE over
 [ hiddens , layers ] = meshgrid( hiddenList , layerList );
 errors = zeros( layerListQuantity , hiddenListQuantity , meanQuantity );
+tic
 for l = 1 : layerListQuantity
     for h = 1 : hiddenListQuantity
         hiddenLayers = hiddens(l,h) * ones( 1 , layers(l,h) )
@@ -46,6 +52,7 @@ for l = 1 : layerListQuantity
         end
     end
 end
+toc
 
 %% Plot results
 errors = mean(errors,3);
@@ -57,7 +64,9 @@ ylabel( 'Hidden Neuron Quantity' );
 zlabel( 'MSE' );
 
 %% Find optimal parameters and test
+tic
 [ minMSE , I ] = min(errors(:))
 [ optLayerQuantity , optHiddenQuantity ] = ind2sub( [ layerListQuantity , hiddenListQuantity ] , I(1) )
 hiddenLayers = optHiddenQuantity * ones( 1 , optLayerQuantity );
 [ MSE , testOutput ] = simulateFFNN( trainingInput , trainingTarget , testInput , testTarget , hiddenLayers )
+toc
