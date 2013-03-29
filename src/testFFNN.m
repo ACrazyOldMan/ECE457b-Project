@@ -73,11 +73,11 @@ zlabel( 'MSE' );
 %% Find optimal parameters and test
 tic
 [ minMSE , I ] = min(errors(:))
-[ optLayerQuantity , optHiddenQuantity ] = ind2sub( [ layerListQuantity , hiddenListQuantity ] , I(1) )
-optParams = [ optLayerQuantity , optHiddenQuantity ];
+[ optLayer , optHidden ] = ind2sub( [ layerListQuantity , hiddenListQuantity ] , I(1) )
+optParams = [ layerList(optLayer) , hiddenList(optHidden) ];
 optFile = sprintf( 'FFNN-%s-%i-optParams.txt' , reductionAlgorithm , length(symbolsToLoad) );
 save( optFile , '-ascii' , 'optParams' );
-hiddenLayers = optHiddenQuantity * ones( 1 , optLayerQuantity );
+hiddenLayers = optHidden * ones( 1 , optLayer );
 [ MSE , testOutput , trainingOutput , net ] = simulateFFNN( trainingInput , trainingTarget , testInput , testTarget , hiddenLayers );
 MSE
 netFile = sprintf( 'FFNN-%s-%i-net' , reductionAlgorithm , length(symbolsToLoad) );
