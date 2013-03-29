@@ -19,15 +19,18 @@ disp( 'Loading test data...' );
 trainingInput = single(trainingInput) / single(max(trainingInput(:)));
 testInput = single(testInput) / single(max(testInput(:)));
 
-%% reduce dimensionality of inputs
+%% Reduce dimensionality of inputs
 disp( 'Reducing dimensionality using KSOM...' );
 desiredDim = 100; % new dimensionality; increase for higher accuracy, decrease for faster FFNN training
-algorithm = 'ksom';
+reductionAlgorithm = 'pca';
 tic
-if strcmp( algorithm , 'ksom' )
+if strcmp( reductionAlgorithm , 'ksom' )
     changeThreshold = 0.001;
     ksomFile = 'ksomWeights'; % filename for caching of KSOM weights; delete to recalculate weights
-    newInput = reduceDimensionality( { trainingInput , testInput } , desiredDim , algorithm , changeThreshold , ksomFile );
+    delete(ksomFile);
+    newInput = reduceDimensionality( { trainingInput , testInput } , desiredDim , reductionAlgorithm , changeThreshold , ksomFile );
+elseif strcmp( reductionAlgorithm , 'pca' )
+    newInput = reduceDimensionality( { trainingInput , testInput } , desiredDim , reductionAlgorithm );
 end
 toc
 trainingInput = newInput{1};
@@ -58,6 +61,8 @@ toc
 
 %% Plot results
 errors = mean(errors,3);
+errorFile = sprintf( 'FFNN-%s-%i-errors.txt' , reductionAlgorithm , length(symbolsToLoad) );
+save( errorFile , '-ascii' , 'errors' );
 figureID = newFigure( figureID );
 surf( layers , hiddens , errors );
 title( sprintf( 'MSE for Varying Layer and Hidden Neuron Quantities Averaged over %i Run(s)' , meanQuantity ) );
@@ -69,8 +74,12 @@ zlabel( 'MSE' );
 tic
 [ minMSE , I ] = min(errors(:))
 [ optLayerQuantity , optHiddenQuantity ] = ind2sub( [ layerListQuantity , hiddenListQuantity ] , I(1) )
+optParams = [ optLayerQuantity , optHiddenQuantity ];
+optFile = sprintf( 'FFNN-%s-%i-optParams.txt' , reductionAlgorithm , length(symbolsToLoad) );
+save( optFile , '-ascii' , 'optParams' );
 hiddenLayers = optHiddenQuantity * ones( 1 , optLayerQuantity );
 [ MSE , testOutput , trainingOutput , net ] = simulateFFNN( trainingInput , trainingTarget , testInput , testTarget , hiddenLayers );
 MSE
-save 'FFNN' net;
+netFile = sprintf( 'FFNN-%s-%i-net' , reductionAlgorithm , length(symbolsToLoad) );
+save( netFile , 'net' );
 toc
