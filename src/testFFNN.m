@@ -20,7 +20,7 @@ trainingInput = single(trainingInput) / single(max(trainingInput(:)));
 testInput = single(testInput) / single(max(testInput(:)));
 
 %% Reduce dimensionality of inputs
-disp( 'Reducing dimensionality using KSOM...' );
+disp( 'Reducing dimensionality...' );
 desiredDim = 100; % new dimensionality; increase for higher accuracy, decrease for faster FFNN training
 reductionAlgorithm = 'pca';
 tic
