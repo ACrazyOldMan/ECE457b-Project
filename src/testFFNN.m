@@ -8,7 +8,7 @@ testDir = strcat( symbolDir , 'test' );
 % list of indices of symbols to load such as whole notes; use empty list for all types: []
 % these do not necessarily correspond to the indices of the folders since MatLab sorts string by
 % ASCII, but 'loadSymbolData' will output the types loaded in console
-symbolsToLoad = [1,2];
+symbolsToLoad = [1,2,12,16,17,20,21,22];
 
 %% Load data
 disp( 'Loading training data...' );
@@ -36,7 +36,7 @@ testInput = newInput{2};
 %% Simulate various network parameters and get MSE
 disp( 'Finding best FFNN...' );
 layerList = [ 1 : 2 ]; % list of layer quantities to test
-hiddenList = [ 10 : 10 : 100 ]; % list of hidden quantities to test
+hiddenList = [ 5 : 5 : 25 ]; % list of hidden quantities to test
 layerListQuantity = length(layerList);
 hiddenListQuantity = length(hiddenList);
 meanQuantity = 10; % number of runs to average MSE over
@@ -46,7 +46,9 @@ tic
 for l = 1 : layerListQuantity
     for h = 1 : hiddenListQuantity
         hiddenLayers = hiddens(l,h) * ones( 1 , layers(l,h) )
-        for run = 1 : meanQuantity
+        % change 'parfor' to 'for' if an error occurs; 'parfor' is used with MatLab's Parallel
+        % Computing Toolbox after executing 'matlabpool' to speed up processing
+        parfor run = 1 : meanQuantity
             MSE = simulateFFNN( trainingInput , trainingTarget , testInput , testTarget , hiddenLayers );
             errors(l,h,run) = sum(MSE);
         end
@@ -68,5 +70,7 @@ tic
 [ minMSE , I ] = min(errors(:))
 [ optLayerQuantity , optHiddenQuantity ] = ind2sub( [ layerListQuantity , hiddenListQuantity ] , I(1) )
 hiddenLayers = optHiddenQuantity * ones( 1 , optLayerQuantity );
-[ MSE , testOutput ] = simulateFFNN( trainingInput , trainingTarget , testInput , testTarget , hiddenLayers )
+[ MSE , testOutput , trainingOutput , net ] = simulateFFNN( trainingInput , trainingTarget , testInput , testTarget , hiddenLayers );
+MSE
+save 'FFNN' net;
 toc
