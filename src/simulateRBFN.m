@@ -3,7 +3,7 @@ function [ MSE , testOutput , trainingOutput , net ] = simulateRBFN( trainingInp
     % Gaussian deviation and maxHiddenQuantity for max number of neurons in hidden layer)
     
     %% Code
-    net = newrb( trainingInput , trainingTarget , 0 , sigma , maxHiddenQuantity , 1 );
+    net = newrb( trainingInput , trainingTarget , 0 , sigma , maxHiddenQuantity );
     trainingOutput = net(trainingInput);
     testOutput = net(testInput);
     MSE = [ calcMSE( trainingOutput , trainingTarget ) , calcMSE( testOutput , testTarget ) ];
