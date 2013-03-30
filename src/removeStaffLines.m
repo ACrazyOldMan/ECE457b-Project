@@ -21,18 +21,26 @@ function features = removeStaffLines( sheet , lines , algorithm , varargin )
     
     if strcmp( algorithm , 'simple' )
         %% simple
-        height = 1;
+        height = 10;
         features = sheet > 0;
-        for i = 1 : size(lines,1)
-            line = lines(i,:);
-            for j = 1 : N
-                y = line(j);
-                if features(y,j)
-                    indices = y - height : y + height;
-                    indices = indices( indices >= 1 );
-                    indices = indices( indices <= M );
-                    average = mean( sheet(indices,j) );
-                    features(y,j) = average > 0;
+        finished = false;
+        while ~finished
+            finished = true;
+            jitteredLines = jitterLines( features , lines , height );
+            for i = 1 : size(jitteredLines,1)
+                line = jitteredLines(i,:);
+                for j = 1 : N
+                    y = line(j);
+                    if features(y,j)
+                        indices = y - height : y + height;
+                        indices = indices( indices >= 1 );
+                        indices = indices( indices <= M );
+                        average = mean( features(indices,j) );
+                        if average <= 0.5
+                            features(y,j) = false;
+                            finished = false;
+                        end
+                    end
                 end
             end
         end
