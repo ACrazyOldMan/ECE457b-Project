@@ -1,4 +1,4 @@
-function [ result , pathIDs , pathCost ] = AStar2( graph , goalID , heuristicFunc )
+function [ result , pathIDs , pathCost ] = AStar( graph , goalID , heuristicFunc )
     import structures.GraphNode;
     
     N = graph.numNodes;

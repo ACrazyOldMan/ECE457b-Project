@@ -1,6 +1,6 @@
 figureID = 1;
 
-%% Test for feedforward network classification
+%% Test for feed forward network classification
 % relative to '../data/symbols'
 symbolDir = '';
 trainingDir = strcat( symbolDir , 'training' );
@@ -8,7 +8,7 @@ testDir = strcat( symbolDir , 'test' );
 % list of indices of symbols to load such as whole notes; use empty list for all types: []
 % these do not necessarily correspond to the indices of the folders since MatLab sorts string by
 % ASCII, but 'loadSymbolData' will output the types loaded in console
-symbolsToLoad = [1,2,12,16,17,20,21,22];
+symbolsToLoad = [1,2,12,16,17,20,21,22]
 
 %% Load data
 disp( 'Loading training data...' );
@@ -21,8 +21,8 @@ testInput = single(testInput) / single(max(testInput(:)));
 
 %% Reduce dimensionality of inputs
 disp( 'Reducing dimensionality...' );
+reductionAlgorithm = 'ksom';
 desiredDim = 100; % new dimensionality; increase for higher accuracy, decrease for faster FFNN training
-reductionAlgorithm = 'pca';
 tic
 if strcmp( reductionAlgorithm , 'ksom' )
     changeThreshold = 0.001;
@@ -30,7 +30,8 @@ if strcmp( reductionAlgorithm , 'ksom' )
     delete(ksomFile);
     newInput = reduceDimensionality( { trainingInput , testInput } , desiredDim , reductionAlgorithm , changeThreshold , ksomFile );
 elseif strcmp( reductionAlgorithm , 'pca' )
-    newInput = reduceDimensionality( { trainingInput , testInput } , desiredDim , reductionAlgorithm );
+    pcaFile = 'pcaVectors';
+    newInput = reduceDimensionality( { trainingInput , testInput } , desiredDim , reductionAlgorithm , pcaFile );
 end
 toc
 trainingInput = newInput{1};
@@ -73,8 +74,10 @@ zlabel( 'MSE' );
 %% Find optimal parameters and test
 tic
 [ minMSE , I ] = min(errors(:))
-[ optLayer , optHidden ] = ind2sub( [ layerListQuantity , hiddenListQuantity ] , I(1) )
-optParams = [ layerList(optLayer) , hiddenList(optHidden) ];
+[ optLayer , optHidden ] = ind2sub( [ layerListQuantity , hiddenListQuantity ] , I(1) );
+optLayer = layerList(optLayer)
+optHidden = hiddenList(optHidden)
+optParams = [ optLayer , optHidden ];
 optFile = sprintf( 'FFNN-%s-%i-optParams.txt' , reductionAlgorithm , length(symbolsToLoad) );
 save( optFile , '-ascii' , 'optParams' );
 hiddenLayers = optHidden * ones( 1 , optLayer );

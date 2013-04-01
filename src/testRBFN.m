@@ -30,7 +30,8 @@ if strcmp( reductionAlgorithm , 'ksom' )
     delete(ksomFile);
     newInput = reduceDimensionality( { trainingInput , testInput } , desiredDim , reductionAlgorithm , changeThreshold , ksomFile );
 elseif strcmp( reductionAlgorithm , 'pca' )
-    newInput = reduceDimensionality( { trainingInput , testInput } , desiredDim , reductionAlgorithm );
+    pcaFile = 'pcaVectors';
+    newInput = reduceDimensionality( { trainingInput , testInput } , desiredDim , reductionAlgorithm , pcaFile );
 end
 toc
 trainingInput = newInput{1};
@@ -75,10 +76,11 @@ zlabel( 'MSE' );
 tic
 [ minMSE , I ] = min(errors(:))
 [ optHidden , optSigma ] = ind2sub( [ hiddenListQuantity , sigmaListQuantity ] , I(1) )
-optParams = [ hiddenList(optHidden) , sigmaList(optSigma) ]
+optHidden = hiddenList(optHidden)
+optSigma = sigmaList(optSigma)
+optParams = [ optHidden , optSigma ];
 optFile = sprintf( 'RBFN-%s-%i-optParams.txt' , reductionAlgorithm , length(symbolsToLoad) );
 save( optFile , '-ascii' , 'optParams' );
-hiddenLayers = optHidden * ones( 1 , optSigma );
 [ MSE , testOutput , trainingOutput , net ] = simulateRBFN( trainingInput , trainingTarget , testInput , testTarget , optSigma , optHidden );
 MSE
 netFile = sprintf( 'RBFN-%s-%i-net' , reductionAlgorithm , length(symbolsToLoad) );

@@ -24,10 +24,10 @@ function genSymbolData( inputDir , outputQuantity , outputFormat , outputSize , 
             fileName = imageFiles(j,:)
             inputFile = strcat( inputTypePath , fileName );
             inputImage = imread( inputFile );
-            inputImage = imcomplement( inputImage );
             if size(inputImage,3) > 1
                 inputImage = rgb2gray( inputImage );
             end
+            inputImage = imcomplement( inputImage );
             
             %% Generate images
             for k = 1 : outputQuantity
